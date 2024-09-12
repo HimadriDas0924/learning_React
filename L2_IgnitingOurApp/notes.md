@@ -1,6 +1,43 @@
 - React just isn't making our app fast, A lot of packages apart from 'react' are required to make the app fast.
   - eg: Parcel
 
+### Points to remember:
+
+0. Using a Bundler, we can create different dev build and prod build for our application.
+
+1. What is `dev build` v/s `prod build`
+
+- development build and production build refers to the different configuration and optimization applied to the codebase during the build process. These builds are used in different phases of SDLC.
+
+- **Development Build:**
+
+  - optimized for debugging and development speed.
+
+  - usually NOT minified or compressed.
+
+  - may include extra logging OR development only features.
+
+  - faster build time, as some optimizations are skipped.
+
+- **Production Build :**
+
+  - optimized for performance and reduced file size.
+
+  - minified, compressed.
+
+  - tree shaking (removal of dead code)
+
+  - optimized assets (images)
+
+  - removal of dev only code or features.
+
+2. if encountering any error regarding some dependencies:
+
+- delete the node_modules, .parcel-cache, dist
+- it won't matter bcz they can be re generated.
+- do `npm install`: to download code of all dependencies of node_modules.
+- then again create a dev build.
+
 ### STEP 1 -> (npm init)
 
 - `npm init` : initializes a new node js project by creating a `package.json`. and asks for various information like : project name, author, version, description, keywords, git repo, entry point. These things entered are reflected in package.json.
