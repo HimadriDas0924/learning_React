@@ -71,4 +71,15 @@ const parent = React.createElement(
 ```
 
 - But for more complex Structure: code'll become messy and unreadable
+
   - Solution: `JSX`
+
+- NOTE:
+
+```javascript
+reactRoot.render(firstElem);
+reactRoot.render(secondElem);
+
+// No error will occur
+// secondElem i.e written last will be rendered.
+```

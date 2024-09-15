@@ -117,6 +117,8 @@
 
   - Parcel then `starts a development server` and `serves your app from memory`, typically a local port (default: `1234`).
 
+    - The type of server on which parcel hosts our application is an `HMR server` i.e hot module replacement server.
+
   - **File Watching:** As you make changes in the source file, parcel watches for all these changes and updates the in-memory build.
 
   - The **dev server** uses `HMR = Hot Module Replacement` to push all these updates to the browser `without a full page reload`.
