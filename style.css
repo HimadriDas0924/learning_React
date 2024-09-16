@@ -1,11 +1,79 @@
-#parent {
-    background-color: lightblue;
+* {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
-#child1 {
-    background-color: lightcoral;
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid black;
 }
 
-#child2 {
-    background-color: lightgreen;
+.logo {
+    height: 100px;
+}
+
+.nav-items {
+    font-size: 1.2rem;
+    padding-right: 2%;
+}
+
+.nav-items>ul {
+    padding: 0;
+    display: flex;
+    list-style: none;
+    justify-content: space-around;
+}
+
+.nav-items>ul>li {
+    margin: 10px;
+    padding: 10px;
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.res-container {
+    width: 90%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.search {
+    padding: 10px;
+}
+
+.res-card {
+    margin: 1%;
+    box-sizing: border-box;
+    /* height: 300px; */
+    width: 200px;
+    border: 1px solid black;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-text-container>* {
+    margin: 4%;
+}
+
+/* select all child of a parent */
+.res-card>* {
+    margin: 0.4rem;
+}
+
+.res-card:hover {
+    box-shadow: 5px 5px 5px 0 lightgray;
+    cursor: pointer;
+}
+
+.res-logo {
+    width: 90%;
+    /* height: 45%; */
+    /* padding-top: 10px; */
 }

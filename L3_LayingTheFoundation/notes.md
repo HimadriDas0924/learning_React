@@ -1,5 +1,7 @@
 ## Things to Remember:
 
+- `Component Composition:` using one component inside another component.
+
 1. **INDUSTRY STANDARD:** to run script to run a command.
 
    - rather than using a command: (npx parcel index.html) all the time, we can create a script to run our app in dev mode.
