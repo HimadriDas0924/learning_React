@@ -1,5 +1,13 @@
 ## NOTE:
 
+0. USECASE OF PROPS:
+
+   - to pass variable arguments to a functional component.
+
+   - props are NOT used to pass constant data to a component.
+
+   - store constant data in a separate file, export it, and then import it.
+
 1. how to represent a `<img>` tag in JSX:
 
    - `<img src = "image address"/>`
@@ -146,9 +154,9 @@
 
 ## STEP 3 -> (optimizing the code)
 
-1. while passing dynamic data as props to a component, destructure it first and then use it in your components. To avoid doing a long chain of accessing things everytime.
+1. while passing dynamic data as props to a component, `destructure` it first and then use it in your components. To avoid doing a long chain of accessing things everytime.
 
-2. do optional chaining while destructuring.
+2. do `optional chaining` while destructuring.
 
 3. API could be returning a lot of objects in form of array of objects. So 100s of these card components are required to be placed in their container. Which we should not do manually. Can we use something like a loop ?
 
@@ -180,18 +188,16 @@
 
 4. we might get a warning in console:
 
-- `each child` in a `list` should have a unique prop "key"
-- this "key" is a reserved prop which should contain a `unique value`.
+- `each child` in a `list` should have a unique prop `"key"`
+- this "key" is a `reserved prop` which should contain a `unique value`.
 
 - `V.V.IMP: ` So always whenever you're looping on to rendering elements, put the prop `key` in each element.
 
   ### Above is a Major Optimization because:
 
-  #### example: `Infinite Scroll`, `image collection app.`
+  #### example: `Infinite Scroll`, `image collection app.` Where all the data is not loaded at once.
 
-  - Where all the data is not loaded at once.
-
-  - Bcz: suppose you don't give id to multiple elements of the same element and they've been rendered.
+  - Suppose you don't give id to multiple elements of the same parent and they've been rendered.
 
   - Suppose, `Now a new element comes in` among the childrens (at some position). Now `React don't know which element has come up later`.
 
@@ -203,6 +209,6 @@
 
   - `NOTE:` some people also keep the index of the array to be value of `key` prop, bcz that is also unique to each element.
 
-    - `V.V.IMP : ` But react official docs suggest to not use index for keys. BAD KEYS.
+    - `V.V.IMP : ` But react's official docs suggest to not use index for key prop. BAD Practice.
 
-    - Using a unique key >>>>>> array index.
+    - Using a unique key >>>>>> array index >>>>> putting no key prop value.

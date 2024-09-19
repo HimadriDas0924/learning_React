@@ -36,15 +36,20 @@
     align-items: center;
 }
 
+.filter-btn {
+    margin: 1rem;
+    cursor: pointer;
+}
+
 .res-container {
     width: 90%;
     display: flex;
     flex-wrap: wrap;
 }
 
-.search {
+/* .search {
     padding: 10px;
-}
+} */
 
 .res-card {
     margin: 1%;
