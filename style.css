@@ -41,7 +41,8 @@
     cursor: pointer;
 }
 
-.res-container {
+.res-container,
+.shimmer-container {
     width: 90%;
     display: flex;
     flex-wrap: wrap;
@@ -51,7 +52,8 @@
     padding: 10px;
 } */
 
-.res-card {
+.res-card,
+.shimmer-card {
     margin: 1%;
     box-sizing: border-box;
     /* height: 300px; */
@@ -61,6 +63,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.shimmer-card {
+    height: 300px;
+    background-color: #f0f0f0;
+    border: none;
 }
 
 .card-text-container>* {

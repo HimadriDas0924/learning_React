@@ -1,53 +1,55 @@
 import RestaurantCard from "./RestaurantCard";
-import resList from "../utils/mockData";
-import { useState } from "react"; // to create superpowerful state variables.
+// import resList from "../utils/mockData.js";
+import Shimmer from "./Shimmer";
+import { useState, useEffect } from "react";
 
 /* 
-HOW TO DO SOMETHING ON CLICK in react
-
-- just attach an attribute name 'onClick' to the element, whose value should be a JS callback fn.
-- similary there are multiple attributes: onMouseOver, etc.
+- Body Component is executed line by line
+- As soon as it encouters useEffect(), it saves the cb fn to be called after rendering of Body.
 */
-
 const Body = () => {
-  /*
-  THEORY: 
+  const [listOfRestaurants, setListOfRestaurants] = useState([]);
 
-  - how to use: useState -> creates a state variable && is used to maintain state of the component.
+  useEffect(() => {
+    fetchData();
+  }, []); // 2 arguments: 1st: arrow fn, 2nd: dependency array
+  /* 
+  - when is the callback function called ? 
+    - as soon as the entire component is rendered i.e execution of component fn, then the cb fn is called.
 
-  - useState fn: returns a stateful value (1st val i.e listOfRestaurants) and a function to update it (2nd val i.e setListOfRestaurants).
-
-  - i.e we cannot directly update the stateful variable. unless we use the function it returns to do so.
-
-  - setListOfRestaurants(pass data that you want listOfRestaurants to be updated with).
-
-  eg: suppose you want to make the listOfRestaurants empty: 
-    - how to do ? 
-      - setListOfRestaurants([]);
-      - This is equivalent to doing: listOfRestaurants = [], if it was a normal JS variable.
-
-  
-  - As soon as the stateful variable changes using (setListOfRestaurants()), the COMPONENT will be automatically re-rendered.
-
-  - When to use useState() ? 
-    - Suppose a Component uses some data.
-    - Using that data you're rendering something on the UI.
-    - Now, based on some events you're changing the data.
-    - Based on the changed data, you want UI to update.
-
-    - const [data, changeDataFunction] = useState(default value of data);
-      - As soon as you change the data based on some event.
-        - do: changeDataFunction(modifiedData);
-
-  - NOTE: whenever a state variable UPDATES, react RE-RENDERS the component.
-
-      - Since, state variable has the update value && we're rendering the UI based on the state variable only. So that's why the UI changes.
-
-      - react re-renders the component quickly.
+  - USECASE: when we need to do something after rendering of the component, then write it inside useEffect();
+  (here) after rendering the component we need to make an api call,wait for response && as soon as we get the response, re render the component with data from api.
   */
 
-  // Local State Variable - superpowerful variable
-  const [listOfRestaurants, setListOfRestaurants] = useState(resList); // we pass the default value as arg which could be anything.
+  const fetchData = async () => {
+    // fetch() is provided by the Browser, not JS
+    // fetch() returns a promise, which resolves to a readable stream. so convert it to json
+    const data = await fetch(
+      "https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.9715987&lng=77.5945627&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
+    );
+
+    // console.log("fetch resolved promise data", data);
+
+    const json = await data.json();
+    // console.log("json converted promise data", json);
+
+    // after getting the JSON data, update the stateVariable with this data, then component will automatically re render.
+
+    const apiResObjArray =
+      json?.data?.cards?.at(4)?.card?.card?.gridElements?.infoWithStyle
+        ?.restaurants;
+
+    // console.log("updated state variable is ", apiResObjArray);
+
+    // update stateVariable
+    setListOfRestaurants(apiResObjArray);
+  };
+
+  // if stateVariable is emptyArray. So api call yet to be made. Display loader in place of cards.
+  let displayShimmer = undefined;
+  if (listOfRestaurants.length === 0) {
+    displayShimmer = true;
+  }
 
   return (
     <div className="body">
@@ -56,20 +58,24 @@ const Body = () => {
           className="filter-btn"
           onClick={() => {
             const filteredList = listOfRestaurants.filter(
-              (res) => res?.info?.avgRating > 4
+              (res) => res?.info?.avgRating > 4.3
             );
 
-            setListOfRestaurants(filteredList); // calling the function && pass in the udpated value of the stateful variable.
+            setListOfRestaurants(filteredList); // calling the function && pass in the udpated value of the stateful variable. As soon as the variable updates, the UI is re rendered i.e functional component is re called.
           }}
         >
           Top Rated Restaurants
         </button>
       </div>
-      <div className="res-container">
-        {listOfRestaurants.map((restaurant, index) => (
-          <RestaurantCard key={restaurant.info.id} resData={restaurant} />
-        ))}
-      </div>
+      {displayShimmer ? (
+        <Shimmer />
+      ) : (
+        <div className="res-container">
+          {listOfRestaurants.map((restaurant, index) => (
+            <RestaurantCard key={restaurant.info.id} resData={restaurant} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

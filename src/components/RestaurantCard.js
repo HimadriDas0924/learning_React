@@ -20,7 +20,7 @@ const RestaurantCard = (props) => {
       <div className="card-text-container">
         <h3>{name}</h3>
         <p>{cuisines.join(", ")}</p>
-        <p>{rating}⭐</p>
+        <p>{rating + "⭐"}</p>
         <p>{time} minutes</p>
       </div>
     </div>

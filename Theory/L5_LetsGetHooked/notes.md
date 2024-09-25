@@ -119,6 +119,8 @@
 
      1. `useState()`;
 
+        - import it as named export from "react".
+
         - it returns a (state variable) and (a function to update the state variable).
 
         - Both of them should be accepted in an array.
@@ -153,18 +155,19 @@
    // and display those cards from the filtered objects only.
 
    import { resData } from "smt";
+   import { useState } from "react";
 
    const Component = () => {
      const [listOfRestaurants, setListOfRestaurants] = useState(resData); // resData is default value of listOfRestaurants
 
      /* on click we want to update the data i.e listOfRestaurants */
      /*
-        update listOfRestaurants using the function
+      update listOfRestaurants using the function
    
-        as soon we update it, listOfRestaurants is updated and <Component/> is re-rendered.
+      as soon we update it, listOfRestaurants is updated and <Component/> is re-rendered.
    
-        since listOfRestaurants is updated. so in res-card-container the cards are displayed according to updated listOfRestaurants.
-    */
+      since listOfRestaurants is updated. so in res-card-container the cards are displayed according to updated listOfRestaurants.
+   */
      return (
        <div>
          <button
