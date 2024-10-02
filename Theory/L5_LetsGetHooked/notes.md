@@ -139,15 +139,29 @@
 
      2. `useEffect()`;
 
-6. **USECASE of useState ?**
+6. ## USECASE of useState
 
-   - Suppose a Component uses some data.
+   - **if after doing something, you want the UI to change: use useState()**
+
+   - eg: Suppose a Component uses some data.
 
    - Using that data you're rendering something on the UI.
 
-   - Now, based on some events you're changing the data.
+   - Now, based on some events you want to change the UI.
 
-   - Based on the changed data, you want UI to update.
+   - we can do it using useState.
+
+   - useState("default value") returns a 2 sized array. 0th: rep a state variable with "default value" and 1th: is a function to update the state variable say(setFn).
+
+   - we cannot directly modify the state variable without the function.
+
+   - calling the `setFn( pass value to update in stateVar as args )` will automatically update the state var and re render the UI.
+
+   ### NOTE:
+
+   - Does this mean that the state variable is re declared and re initialized with default value ?
+
+   - `NO`, bcz state variables are preserved between renders. So in the next render cycle, the component uses the updated value of state variable.
 
    ```javascript
    // resData contains the data that we're using to display all the cards in the UI.

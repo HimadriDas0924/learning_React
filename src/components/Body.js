@@ -10,6 +10,10 @@ import { useState, useEffect } from "react";
 const Body = () => {
   const [listOfRestaurants, setListOfRestaurants] = useState([]);
 
+  const [searchText, setSearchText] = useState(""); // binding this state variable to the input box of search.
+
+  console.log("Body component");
+
   useEffect(() => {
     fetchData();
   }, []); // 2 arguments: 1st: arrow fn, 2nd: dependency array
@@ -45,15 +49,37 @@ const Body = () => {
     setListOfRestaurants(apiResObjArray);
   };
 
-  // if stateVariable is emptyArray. So api call yet to be made. Display loader in place of cards.
-  let displayShimmer = undefined;
-  if (listOfRestaurants.length === 0) {
-    displayShimmer = true;
-  }
-
-  return (
+  // state variable empty: display loader. else display the body
+  return listOfRestaurants.length == 0 ? (
+    <Shimmer />
+  ) : (
     <div className="body">
       <div className="filter">
+        <div className="search">
+          <input
+            type="text"
+            className="search-box"
+            value={searchText}
+            onChange={(e) => {
+              // whatever we type is displayed in the input box.
+              setSearchText(e.target.value);
+            }}
+          />
+          <button
+            onClick={() => {
+              // filter the restaurant card and update the UI.
+              const filteredRes = listOfRestaurants.filter((resObj) => {
+                const name = resObj?.info?.name.toLowerCase();
+                return name.includes(searchText.toLowerCase());
+              });
+
+              // console.log(filteredRes);
+              setListOfRestaurants(filteredRes); // problem: we're filtering out our reqd value from the current value of listOfRestaurants and not from the original value. So we'll be getting wrong filtered out data OR no data at all i.e loader.
+            }}
+          >
+            Search
+          </button>
+        </div>
         <button
           className="filter-btn"
           onClick={() => {
@@ -67,15 +93,11 @@ const Body = () => {
           Top Rated Restaurants
         </button>
       </div>
-      {displayShimmer ? (
-        <Shimmer />
-      ) : (
-        <div className="res-container">
-          {listOfRestaurants.map((restaurant, index) => (
-            <RestaurantCard key={restaurant.info.id} resData={restaurant} />
-          ))}
-        </div>
-      )}
+      <div className="res-container">
+        {listOfRestaurants.map((restaurant, index) => (
+          <RestaurantCard key={restaurant.info.id} resData={restaurant} />
+        ))}
+      </div>
     </div>
   );
 };
