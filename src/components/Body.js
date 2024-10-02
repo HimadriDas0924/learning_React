@@ -8,12 +8,16 @@ import { useState, useEffect } from "react";
 - As soon as it encouters useEffect(), it saves the cb fn to be called after rendering of Body.
 */
 const Body = () => {
+  // list of all the restaurants
   const [listOfRestaurants, setListOfRestaurants] = useState([]);
 
-  const [searchText, setSearchText] = useState(""); // binding this state variable to the input box of search.
+  // list of filtered restaurants
+  const [filteredRest, setFilteredRest] = useState([]);
 
-  console.log("Body component");
+  // input state variable (used for filtering res cards)
+  const [searchText, setSearchText] = useState("");
 
+  // as of now, this cb is executed only once.
   useEffect(() => {
     fetchData();
   }, []); // 2 arguments: 1st: arrow fn, 2nd: dependency array
@@ -25,17 +29,17 @@ const Body = () => {
   (here) after rendering the component we need to make an api call,wait for response && as soon as we get the response, re render the component with data from api.
   */
 
+  console.log("Body component");
+
   const fetchData = async () => {
+    console.log("fetching data of all res from api");
     // fetch() is provided by the Browser, not JS
     // fetch() returns a promise, which resolves to a readable stream. so convert it to json
     const data = await fetch(
       "https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.9715987&lng=77.5945627&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
     );
 
-    // console.log("fetch resolved promise data", data);
-
     const json = await data.json();
-    // console.log("json converted promise data", json);
 
     // after getting the JSON data, update the stateVariable with this data, then component will automatically re render.
 
@@ -43,10 +47,10 @@ const Body = () => {
       json?.data?.cards?.at(4)?.card?.card?.gridElements?.infoWithStyle
         ?.restaurants;
 
-    // console.log("updated state variable is ", apiResObjArray);
+    // NOTE: below both the update fn to udpate value of hooks are executed in a single re-render only.
 
-    // update stateVariable
     setListOfRestaurants(apiResObjArray);
+    setFilteredRest(apiResObjArray);
   };
 
   // state variable empty: display loader. else display the body
@@ -70,11 +74,10 @@ const Body = () => {
               // filter the restaurant card and update the UI.
               const filteredRes = listOfRestaurants.filter((resObj) => {
                 const name = resObj?.info?.name.toLowerCase();
-                return name.includes(searchText.toLowerCase());
+                return name.includes(searchText.trim().toLowerCase());
               });
 
-              // console.log(filteredRes);
-              setListOfRestaurants(filteredRes); // problem: we're filtering out our reqd value from the current value of listOfRestaurants and not from the original value. So we'll be getting wrong filtered out data OR no data at all i.e loader.
+              setFilteredRest(filteredRes);
             }}
           >
             Search
@@ -87,14 +90,14 @@ const Body = () => {
               (res) => res?.info?.avgRating > 4.3
             );
 
-            setListOfRestaurants(filteredList); // calling the function && pass in the udpated value of the stateful variable. As soon as the variable updates, the UI is re rendered i.e functional component is re called.
+            setFilteredRest(filteredList); // calling the function && pass in the udpated value of the stateful variable. As soon as the variable updates, the UI is re rendered i.e functional component is re called.
           }}
         >
           Top Rated Restaurants
         </button>
       </div>
       <div className="res-container">
-        {listOfRestaurants.map((restaurant, index) => (
+        {filteredRest.map((restaurant, index) => (
           <RestaurantCard key={restaurant.info.id} resData={restaurant} />
         ))}
       </div>
