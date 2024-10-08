@@ -1,126 +1,176 @@
-- `NOTE`: it may happen that the API may not return any response to you, so change the location in the app and get a new api from the networks tab.
+## Important points regarding HOOKS:
 
-- get data from a API and not use the dummy data.
+### 1. useEffect:
 
-- ## 1. Approach to Hit an API call:
+- useEffect basically registers a cb fn, which is called after the complete render of the component i.e after the whole code of fn component is executed.
 
-  - `page loads` -> `render UI` (display some loader or just the skeleton)(i.e page has loaded) -> `hit api, wait to get data` -> `render UI using data again`.
+- dependency array is optional. cb fn is mandatory.
 
-  - So, the situation is: to do something, when the page is already loaded
+  ### Behaviour of useEffect depends on the dependency array:
 
-    - ### USECASE(s) OF useEffect()
+  1.  if dependency array is NOT provided => useEffect is called on every render of the component.
 
-    1. if dependency array is empty: then cb of useEffect(cb, []) only executes once at startup bcz the arr never changes.
+  2.  dependency array is empty i.e [] => useEffect is called only on initial render i.e just once.
 
-    ```javascript
+  3.  dependency array has some dependency i.e dependency array is `[stateVariable]` => useEffect called on initial render + useEffect called everytime the stateVariable changes.
 
-    const Component = () => {
-      // declare state variable using useState && use it to display cards
-      // initially set to a default value i.e [] as in empty array of resObjects.
-      const [resObjArray, setResObjArray] = useState([]);
+### 2. useState:
 
-      useEffect(() => {
-        // this callback function is executed as soon as the page loads for the 1st time.
-        fetchData();
-      }, [])
-      // 2nd arg: dependency array.
+- local state variables should be created inside the fn component.
 
-      const fetchData() {
-        // fetch the data and update the stateVariable.
-      }
+- at the top in the fn component.
 
-      return (
-        <div className="res-container">
-        </div>
-      )
-    }
+- should not be created inside:
 
-    ```
+  1.  function.
+  2.  condition i.e if-else
+  3.  loops
 
-- `Conditional Rendering of components`
+  - bcz then there could be some inconsistency between different renders.
 
-  - Display different Components based on some conditions.
-  - eg: if, if-else, if-elseif, nested situations.
-  - we can either directly return a component, or just use a component over there based on some conditions.
+## Routing in React Application:
 
-  ```javascript
+- to perform routing in React application: install a library: `"react-router-dom"` as an npm package.
 
-  let displayShimmer = undefined;
-  if(listOfRestaurants.length === 0) displayShimmer = true;
+### - Steps:
 
-  const myComponent = () => {
+1. To do routing: create a configuration in our root-component file.
 
-    if(someOtherCondition) {
-      return <h1>some other condition occured </h1>
-    }
+2. Configuration: specifying on what route, what component to load.
 
-    return (
-      {displayShimmer ? (
-        <Shimmer />
-      ) : (
-        <div className="res-container">
-          {listOfRestaurants.map((restaurant, index) => (
-            <RestaurantCard key={restaurant.info.id} resData={restaurant} />
-          ))}
-        </div>
-      )}
-    )
-  }
+3. import the `createBrowserRouter` fn from react-router-dom and pass in the configuration as argument. Configuration is an array of path objects. path object consists of keys like: path,element,children,errorElement
 
-  ```
+4. createBrowserRouter(configuration) will return us a `routerObject`.
 
-## 2. Understanding how useState() works and React Re-conciliation algorithm:
+5. But this is not enough to display different components based on different route. But still we're doing: `ReactRoot.render(<AppLayout />);`
 
-- setBtnName(updatedValue) : the component is getting re-rendered i.e Header is called again.
+6. To render different components based on routes: import `RouterProvider` from "react-router-dom".
 
-- new instance of btnName,setBtnName is created. btnName is initialized with updated value.
+- **NOTE :**
 
-- New virtual DOM is created && compared with older virtual DOM (i.e a JS object representing the actual DOM) of the component.
+  1. `RouterProvider` is a Component which we need to `render` instead of AppLayout and `pass the routerObject as props`.
 
-- Using diff-algo, it's found out that only the button changes.
+  2. react-router-dom: also provides it's own error component which is displayed if the route is not found. So we can create our custom error page component using the `property : errorElement of path object`
 
-- so only the button is updated in the DOM and rest of the elements are untouched in the DOM.
-
-- **NOTE :** the entire Component code will be executed, but based on virtual DOM comparison, only the required changes are reflected in the DOM.
+  3. we can use a HOOK `useRouteError` provided by "react-router-dom" to get error information.
 
 ```javascript
-const Header = () => {
-  const [btnName, setBtnName] = useState("Login");
-  console.log("Header");
+// in MyErrorComponent.js
 
+import { useRouteError } from "react-router-dom";
+
+const MyErrorComponent = () => {
+  const err = useRouteError();
+
+  console.log(err); // get which dynamic error info you want to display.
+
+  return <div></div>;
+};
+```
+
+```javascript
+// in app.js
+
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+const AppLayout = () => {
   return (
-    <div className="header">
-      <div className="logo-container">
-        <img className="logo" src={header_logo_url} />
-      </div>
-      <div className="nav-items">
-        <ul>
-          {console.log("nav-items")}
-          <li>Home</li>
-          <li>About Us</li>
-          <li>Contact Us</li>
-          <li>Cart</li>
-          <button
-            className="login"
-            onClick={() => {
-              btnName === "Login" ? setBtnName("Logout") : setBtnName("Login");
-            }}
-          >
-            {btnName}
-          </button>
-        </ul>
-      </div>
+    <div>
+      <Header />
+      <Body />
     </div>
   );
 };
 
-// with every re render: console: Header nav-items
+const routerObj = createBrowserRouter([
+  {
+    path: "/",
+    element: <AppLayout />,
+    errorElement: <MyErrorComponent />, // custom created error component, && since "/": is prefix to all the routes: so this Error page is displayed for every error.
+  },
+  {
+    path: "/contact",
+    element: <Contact />,
+  },
+  {
+    path: "/about",
+    element: <About />,
+  },
+]);
+
+ReactRoot.render(<RouterProvider router={routerObj} />);
 ```
 
-## 3. Implementing Search Functionality:
+## Nested Route/ Children Route in React:
 
-- **NOTE:**
+- children routes are created using the `children` property of a path object, which is an array of path objects.
 
-  - `<input value = "default">` : value attribute contains the value which is sent to the server when the form is submitted.
+- **NOTE :** whichever route configuration is found first is consider consider.
 
-  - Once `value` of the input box is set, it is reflected in the input box && cannot be manually changed by typing. To change it: either `don't keep a value` of the value attribute. OR we can change it using javascript.
+- **NOTE :** If we create nested routes via the children property of a path object then go to that path won't be displaying the component specified, `Because still element of the path object would be specific Component only.`
+
+  - To solve this problem: we need to use a component which'd act as the placeholder for the component mentioned in the nested route.
+
+  - import `Outlet` component from react-router-dom for it.
+
+```javascript
+
+import {createBrowserRouter, RouterProvider, Outlet} from "react-router-dom";
+
+// Outlet doesn't take any physical space in DOM. It's just a placeholder.
+const AppLayout = () => {
+  return (
+    <div>
+      <Header />
+      <Outlet />
+    </div>
+  )
+}
+
+// Now, whichever route we hit, if we've provided a configuration of it, <Outlet /> will be replaced by the 'element' of that path.
+const appRouter = createBrowserRouter([
+  {
+    path: '/',
+    element: <AppLayout />,
+    children: [
+      {
+        path: '/',
+        element: <Body />
+      },
+      {
+        path: '/about',
+        element: <About />
+      },
+      {
+        path: '/contact',
+        element: <Contact />
+      }
+    ]
+  },
+  {
+    path: 'nesting1/nesting2' // another way to provide nested routes,
+    element: <Something />
+  },
+  {
+    path: '/about', // this is provided above, so this configuration of '/about' is ignored.
+    element: <About2 />
+  }
+])
+
+```
+
+## Don't use `<a>` in React for going to a different route
+
+- bcz it reloads the page.
+- instead use: `<Link to = 'path'>` i.e Link Component provided by react-router-dom.
+- Useage is same as anchor tag.
+- This won't reload the page on hitting a different route, rather just update the components.
+
+```javascript
+<Link to="/contact"> Contact </Link>
+// click on Contact and you go to the /contact page : generated by updating the components.
+```
+
+### This is why React applications are called Single page Applications:
+
+- bcz when we hit a different route, a new page is not loaded, rather the whole component is refreshed/updated.
