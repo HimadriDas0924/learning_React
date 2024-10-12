@@ -1,6 +1,7 @@
 import RestaurantCard from "./RestaurantCard";
 import Shimmer from "./Shimmer";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom"; // go to different different routes (defined in path objects) without page-reload.
 
 const Body = () => {
   // list of all the restaurants
@@ -80,7 +81,13 @@ const Body = () => {
       </div>
       <div className="res-container">
         {filteredRest.map((restaurant, index) => (
-          <RestaurantCard key={restaurant.info.id} resData={restaurant} />
+          <Link
+            className="link-res-card"
+            to={"/restaurants/" + restaurant.info.id}
+            key={restaurant.info.id} // NOTE: 'key' should be within the parent element used within a map.
+          >
+            <RestaurantCard resData={restaurant} />
+          </Link>
         ))}
       </div>
     </div>

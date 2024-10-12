@@ -5,6 +5,7 @@ import Body from "./components/Body";
 import About from "./components/About";
 import Contact from "./components/Contact";
 import Error from "./components/Error";
+import RestaurantMenu from "./components/RestaurantMenu";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom"; // createBrowserRouter creates a routing configuration for us && RouterProvide provides this routing configuration to our app. Outlet is a Component which replaces itself with the reqd component based on the route.
 // React Outlet is a Component provided by React Router that serves as a placeholder for Children Components based on children routes. It allows for loading dynamic components based on different routes.
 
@@ -50,10 +51,12 @@ const appRouter = createBrowserRouter([
         path: "/contact",
         element: <Contact />,
       },
+      {
+        path: "/restaurants/:resId",
+        element: <RestaurantMenu />,
+      },
     ],
-    errorElement: <Error />, // if error happens: display this Component instead of the page displayed by "react-router-dom".
-
-    // NOTE: putting an error component when error happens at the "/" route, will display this page as Error page for all the other routes.
+    errorElement: <Error />,
   },
 ]);
 
