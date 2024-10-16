@@ -185,3 +185,8 @@ body {
 .link-res-card {
     all: initial;
 }
+
+.user-card {
+    padding: 1rem;
+    border: 1px solid white;
+}

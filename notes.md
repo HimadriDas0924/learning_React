@@ -1,176 +1,105 @@
-## Important points regarding HOOKS:
+## 0. What is output of console.log(useState("hi")) ?
 
-### 1. useEffect:
+- 2 sized array is returned.
+- 0th value: 'hey'.
+- 1th value: function named: `bound dispatchSetState`.
+- There are also other information in the function like: Fiber Node, Queue, Action to take to update the state variable.
 
-- useEffect basically registers a cb fn, which is called after the complete render of the component i.e after the whole code of fn component is executed.
+## 1. Class Based Component INTRO:
 
-- dependency array is optional. cb fn is mandatory.
+- fn component: normal JS function that returns a piece of JSX.
 
-  ### Behaviour of useEffect depends on the dependency array:
+- class component: normal JS class which has render method: that returns a piece of JSX and that'll be converted to HTML and rendered into the UI.
 
-  1.  if dependency array is NOT provided => useEffect is called on every render of the component.
+- extends React.Component : lets react know that this is a Component.
 
-  2.  dependency array is empty i.e [] => useEffect is called only on initial render i.e just once.
+- React.Component is present in the package 'react'.
 
-  3.  dependency array has some dependency i.e dependency array is `[stateVariable]` => useEffect called on initial render + useEffect called everytime the stateVariable changes.
+- How does the Class-Based Component receive props ?
+- ans: constructor fn receives the props and we need to to pass the props to the parent using: super(props)
 
-### 2. useState:
+## 2. Passing Props to Class Based Component:
 
-- local state variables should be created inside the fn component.
+1. In the constructor fn of the class-based component, why should super(props) be explicitely called ?
 
-- at the top in the fn component.
+- 1st: In case of Inheritance, there is a RULE that inside the constructor of the child class, firstly you should invoke the parent class constructor. This is done so that the properties,methods of the parent are first inherited to the child object(bcz the child object may work on them).
 
-- should not be created inside:
+- without calling parent class's constructor, we cannot use 'this' inside the constructor.
 
-  1.  function.
-  2.  condition i.e if-else
-  3.  loops
+- 2nd: If we don't pass the props to the React.Component i.e parent class via super(props), this.props is not initialized by the parent, so we cannot use this.props inside the child.
 
-  - bcz then there could be some inconsistency between different renders.
+NOTE: 'props' is a property of the React.Component Class, which it initializes inside it's constructor: this.props = props we pass to parent via super.
 
-## Routing in React Application:
-
-- to perform routing in React application: install a library: `"react-router-dom"` as an npm package.
-
-### - Steps:
-
-1. To do routing: create a configuration in our root-component file.
-
-2. Configuration: specifying on what route, what component to load.
-
-3. import the `createBrowserRouter` fn from react-router-dom and pass in the configuration as argument. Configuration is an array of path objects. path object consists of keys like: path,element,children,errorElement
-
-4. createBrowserRouter(configuration) will return us a `routerObject`.
-
-5. But this is not enough to display different components based on different route. But still we're doing: `ReactRoot.render(<AppLayout />);`
-
-6. To render different components based on routes: import `RouterProvider` from "react-router-dom".
-
-- **NOTE :**
-
-  1. `RouterProvider` is a Component which we need to `render` instead of AppLayout and `pass the routerObject as props`.
-
-  2. react-router-dom: also provides it's own error component which is displayed if the route is not found. So we can create our custom error page component using the `property : errorElement of path object`
-
-  3. we can use a HOOK `useRouteError` provided by "react-router-dom" to get error information.
+## 3. Creating State Variables and Updating them:
 
 ```javascript
-// in MyErrorComponent.js
+/* 
+- Loading a Class Based Component in the webpage: means that we're creating a instance of the class.
 
-import { useRouteError } from "react-router-dom";
+- Whenever an instance of the class is created, it's constructor is called: 
+    - And constructor is the best place to receive props.
+    - And constructor is the best place to create state variables.
 
-const MyErrorComponent = () => {
-  const err = useRouteError();
+    - Earlier, there were NO HOOKS: so there was a different way to create stateVariables. i.e using this.state : {stateVariable: value}
 
-  console.log(err); // get which dynamic error info you want to display.
+-  NEVER UPDATE STATE VARIABLES DIRECTLY i.e this.state.count = this.state.count + 1;
 
-  return <div></div>;
-};
-```
+- bcz this could create inconsistency && it will update the variable BUT won't automatically re-render the component on update.
 
-```javascript
-// in app.js
+- React provides a funtion i.e this.setState() to update the state variables. we can access this.setState() anywhere in the Class Component.
 
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+- this.setState() takes an object, key: stateVarName : value to update it with
 
-const AppLayout = () => {
-  return (
-    <div>
-      <Header />
-      <Body />
-    </div>
-  );
-};
+- NOTE: we can also batch, updation of multiple stateVariables together to be done in SINGLE RENDER && in this.state = {}, only those stateVariables are getting updated which we're updating using this.setState().
 
-const routerObj = createBrowserRouter([
-  {
-    path: "/",
-    element: <AppLayout />,
-    errorElement: <MyErrorComponent />, // custom created error component, && since "/": is prefix to all the routes: so this Error page is displayed for every error.
-  },
-  {
-    path: "/contact",
-    element: <Contact />,
-  },
-  {
-    path: "/about",
-    element: <About />,
-  },
-]);
+- writing multiple this.setState(obj) to update the stateVariable is a bad practice, rather we can batch multiple updated together.
 
-ReactRoot.render(<RouterProvider router={routerObj} />);
-```
+- NOTE:  when the state variable updates, react will re-render the component -> virtual DOM comparison -> only update a specific portion of the UI.
+*/
 
-## Nested Route/ Children Route in React:
+import React from "react";
 
-- children routes are created using the `children` property of a path object, which is an array of path objects.
+class UserClass extends React.Component {
+  // constructor receives the props
+  constructor(props) {
+    super(props);
 
-- **NOTE :** whichever route configuration is found first is consider consider.
+    // this.state: is a big object that contains all the state variables.
+    // creating a state variable count
+    this.state = {
+      count: 0,
+      count2: 2,
+    };
+  }
 
-- **NOTE :** If we create nested routes via the children property of a path object then go to that path won't be displaying the component specified, `Because still element of the path object would be specific Component only.`
+  // render method returns JSX
+  render() {
+    const { name, location } = this.props;
+    const { count, count2 } = this.state;
 
-  - To solve this problem: we need to use a component which'd act as the placeholder for the component mentioned in the nested route.
-
-  - import `Outlet` component from react-router-dom for it.
-
-```javascript
-
-import {createBrowserRouter, RouterProvider, Outlet} from "react-router-dom";
-
-// Outlet doesn't take any physical space in DOM. It's just a placeholder.
-const AppLayout = () => {
-  return (
-    <div>
-      <Header />
-      <Outlet />
-    </div>
-  )
+    return (
+      <div className="user-card">
+        <h1>Count: {count}</h1>
+        <h1>Count2: {count2}</h1>
+        <button
+          onClick={() => {
+            this.setState({
+              count: this.state.count + 1,
+              count2: this.state.count2 + 1,
+            });
+          }}
+        >
+          Count Increase
+        </button>
+        <h3>Name: {name}</h3>
+        <h3>Location: {location}</h3>
+        <h3>Contact: @himadriDas</h3>
+      </div>
+    );
+  }
 }
 
-// Now, whichever route we hit, if we've provided a configuration of it, <Outlet /> will be replaced by the 'element' of that path.
-const appRouter = createBrowserRouter([
-  {
-    path: '/',
-    element: <AppLayout />,
-    children: [
-      {
-        path: '/',
-        element: <Body />
-      },
-      {
-        path: '/about',
-        element: <About />
-      },
-      {
-        path: '/contact',
-        element: <Contact />
-      }
-    ]
-  },
-  {
-    path: 'nesting1/nesting2' // another way to provide nested routes,
-    element: <Something />
-  },
-  {
-    path: '/about', // this is provided above, so this configuration of '/about' is ignored.
-    element: <About2 />
-  }
-])
-
+export default UserClass;
 ```
 
-## Don't use `<a>` in React for going to a different route
-
-- bcz it reloads the page.
-- instead use: `<Link to = 'path'>` i.e Link Component provided by react-router-dom.
-- Useage is same as anchor tag.
-- This won't reload the page on hitting a different route, rather just update the components.
-
-```javascript
-<Link to="/contact"> Contact </Link>
-// click on Contact and you go to the /contact page : generated by updating the components.
-```
-
-### This is why React applications are called Single page Applications:
-
-- bcz when we hit a different route, a new page is not loaded, rather the whole component is refreshed/updated.
+## 4.
