@@ -187,6 +187,17 @@ body {
 }
 
 .user-card {
-    padding: 1rem;
+    /* padding: 1rem; */
     border: 1px solid white;
+    height: 300px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.user-card>* {
+    margin: 1rem;
+}
+
+.user-avatar>img {
+    height: 90%;
 }

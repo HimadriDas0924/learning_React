@@ -1,3 +1,13 @@
+NOTE:
+
+```javascript
+// for using React.Component : we can import React
+import React from "react";
+
+// OR we can directly destructure here only.
+import { Component } from "react";
+```
+
 ## 0. What is output of console.log(useState("hi")) ?
 
 - 2 sized array is returned.
@@ -102,4 +112,77 @@ class UserClass extends React.Component {
 export default UserClass;
 ```
 
-## 4.
+## 4. Life Cycle of Class based component:
+
+1. if inside a component we're using a Class-based Component, then the code of the component is executed line by line and once the Class-Based-Component is encountered, an instance of the class-based-component is created. 1st constructor is called. 2nd render method is called AND once the class Component is mounted onto the DOM i.e its in the DOM then `componentDidMount()` is called.
+
+2. **order of calling of lifecycle methods :**
+
+   - parent constructor
+   - parent render
+   - (if another component is used in the render method of parent then:
+     - child constructor
+     - child render)
+   - DOM is updated in a single batch(i.e REACT RECONCILIATION: 1st entire virtual DOM is created, diff algo, real DOM is updated in a single batch)
+   - child component's componentDidMount()
+   - parent component's componentDidMount()
+
+   - ORDER OF COMPONENTDIDMOUNT() ?
+
+   - **NOTE :** internally react maintains a queue: `whichever component's render() method is COMPLETELY executed 1st`, that component's `componentDidMount()` is called 1st after the DOM update.
+
+```javascript
+import React from "react";
+
+class UserClass extends React.Component {
+  // constructor receives the props
+  constructor(props) {
+    super(props);
+
+    // this.state: is a big object that contains all the state variables.
+    this.state = {
+      userInfo: {
+        name: "dummy name",
+        location: "dummy location",
+        twitter_username: "dummy username",
+        avatar_url: "",
+      },
+    };
+  }
+
+  async componentDidMount() {
+    // api call
+    /* NOTE: we can make componentDidMount() as an async function. && then we can use 'await' inside it. It does return a promise, but React doesn't depend on componentDidMount's return value for it's life cycle so it doesn't matter. */
+    const data = await fetch("https://api.github.com/users/HimadriDas09");
+    const json = await data.json();
+
+    // update a state variable with api data, which will re-render the component.
+    this.setState({
+      userInfo: json,
+    });
+
+    console.log(json);
+  }
+
+  // render method returns JSX
+  render() {
+    const { name, location, twitter_username, avatar_url } =
+      this?.state?.userInfo;
+
+    return (
+      <div className="user-card">
+        <div className="user-text-info">
+          <h3>Name: {name}</h3>
+          <h3>Location: {location}</h3>
+          <h3>twitter: {twitter_username}</h3>
+        </div>
+        <div className="user-avatar">
+          <img src={avatar_url} />
+        </div>
+      </div>
+    );
+  }
+}
+
+export default UserClass;
+```
