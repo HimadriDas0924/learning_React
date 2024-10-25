@@ -186,3 +186,177 @@ class UserClass extends React.Component {
 
 export default UserClass;
 ```
+
+## 5. Update and Unmounting lifecycle:
+
+- when we update our state variable, then UPDATING phase is scheduled for the component.
+
+- `In the UPDATING phase:`
+
+  - step 1: render().
+  - step 2: DOM is updated (i.e virtual DOM creation, diff algorithm, changes made to real DOM).
+  - step 3: componentDidUpdate() (i.e called after the DOM updates)
+
+- `NOTE`: `THIS DOES NOT HAPPEN :` if in a same heirarchy: multiple state changes happen: then multiple UPDATING phase will happen in isolation.
+
+  - Suppose, if we've update the states of parent only. then it's sure that UPDATING phase will happen for Parent.
+
+  - BUT, using the` component tree React 1st finds out what components will the affected by the UPDATING phase of the parent. And UPDATES them all in a single render.`
+
+  - i.e child, grand child : depend on parent. So UPDATING PHASE of parent, child, grand child will happen.
+
+  - `render()` happens in `top to bottom.` bcz parent depends on the JSX of the child.
+
+  - `componentDidUpdate()` sequence: `bottom to top` bcz 1st the entire lifecyle of the child should be executed and then of it's parent.
+
+  CODE:
+
+  ```javascript
+  // execution order after updating: state of parent,grandchild
+
+  /*
+  Parent, GrandChild => UPDATING => supposed to happen. But Child may get affected by parent's UPDATING. So Child will also go through UPDATING phase.
+  
+  Does it mean GrandChild will be UPDATED twice ? => NO
+  
+  ORDER:
+  
+  parent's render
+  chlid's render
+  grandChild's render
+  
+  <DOM updated>
+  
+  grandChild's componentDidUpdate()
+  Child's componentDidUpdate()
+  Parent's componentDidUpdate()
+  
+  */
+  class Parent extends React.Component {
+    render() {
+      return (
+        <div>
+          <Child />
+        </div>
+      );
+    }
+  }
+  class Child extends React.Component {
+    render() {
+      return (
+        <div>
+          <GrandChild />
+        </div>
+      );
+    }
+  }
+  class GrandChild extends React.Component {
+    render() {
+      return (
+        <div>
+          <h2>smt</h2>
+        </div>
+      );
+    }
+  }
+  ```
+
+- `Unmounting` phase happens just before the component is removed from the DOM
+
+  - lifecycle methods: `componentWillUnmount()`
+
+  - It is used to pefrom clean ups
+
+    - **USECASE :** Suppose we initiated something but after changing the page OR removing the Component from the DOM, that thing should've stopped. But it didn't. So in case this `UNEXPECTED` behaviour doesn't happen we use terminate those initiated process in componentWillUnmount() which executes just before the component is un mounted from the DOM.
+
+    - `eg:` event listeners, timers, intervals, subscriptions, AJAX calls.
+
+    - `Expected Sequence:` grand children -> child -> parent.
+
+## 6. Class Based vs Functional Component:
+
+### 1. functional component doesn't follow lifecycle of class based components.
+
+### 2. useEffect() !=== componentDidMount().
+
+- although both are used to make API calls (bcz of the better approach to make API call i.e make them after the DOM is loaded and the refresh the DOM).
+
+- But useEffect() DOESN'T use componentDidMount() behind the scenes.
+
+- useEffect(cb) : executes cb after every re-render of the Component and DOM update.
+
+- componentDidMount(// code): is executed after initial mounting of component onto the DOM.
+
+### 3. How to achieve this functionality of cb execution after every re-render in class based ?
+
+- since, after in every re-render i.e UDPATE : `componentDidUpdate()` is called. So we can write the code over there.
+
+### 4. how to achieve: useEffect(cb, [var1, var2, ...]); in class based ?
+
+- i.e how to check if state has changed or not ?
+- we can access the `(prevProps as 0th arg, prevState as 1th arg)` in class based components.
+
+```javascript
+class Parent extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      count: 0,
+      count2: 1,
+    };
+  }
+
+  componentDidMount() {}
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.count !== prevState.count) {
+      ...
+    } else {
+      ...
+    }
+
+    if (this.state.count2 !== prevState.count2) {
+      ...
+    } else {
+      ...
+    }
+  }
+}
+```
+
+### 5. How to achieve conditional check of state from above class based in useEffect() ?
+
+```javascript
+useEffect(cb1);
+
+useEffect(cb2);
+```
+
+### 6. Can we use useEffect() for cleanup as we were doing via componentWillUnmount() ?
+
+- yes, In the cb function of useEffect we can return a function which can be used for cleanup.
+
+- React, expects the the `callback function` of useEffect() either `returns` nothing i.e undefined or a cleanup function `(which is called when DOM updates OR dependencies changes).`
+
+```javascript
+
+// returned fn is called: when component is UN MOUNTED and we need to do cleanup OR when the dependencies changes.
+
+useEffect(() => {
+  const id = setInterval(cb, 1000);
+
+  return () => {
+    clearInterval(id);
+  }
+}, [dep1, dep2, ...])
+
+```
+
+### 7. callback of useEffect() cannot be async fn :
+
+- bcz React expects the cb to return either nothing / a clean up function.
+
+- BUT, async fn always retun a promise. even if we return a fn, it'll be wrapped in a promise and then returned.
+
+- React cannot handle the promise returned bcz it expects a fn/ undefined.
