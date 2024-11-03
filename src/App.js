@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy } from "react";
 import ReactDOM from "react-dom/client";
 import Header from "./components/Header";
 import Body from "./components/Body";
@@ -6,8 +6,21 @@ import About from "./components/About";
 import Contact from "./components/Contact";
 import Error from "./components/Error";
 import RestaurantMenu from "./components/RestaurantMenu";
-import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom"; // createBrowserRouter creates a routing configuration for us && RouterProvide provides this routing configuration to our app. Outlet is a Component which replaces itself with the reqd component based on the route.
-// React Outlet is a Component provided by React Router that serves as a placeholder for Children Components based on children routes. It allows for loading dynamic components based on different routes.
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
+/* 
+- createBrowserRouter creates a routing configuration for us && RouterProvide provides this routing configuration to our app. Outlet is a Component which replaces itself with the reqd component based on the route.
+- React Outlet is a Component provided by React Router that serves as a placeholder for Children Components based on children routes. It allows for loading dynamic components based on different routes.
+*/
+
+// import Grocery from "./components/Grocery";
+/* 
+- lazy loading (i.e whatever we're going to load using lazy loading, won't be included into the main bundle, rather when needed it will be separately loaded)
+
+- to use lazy loading: use the function lazy() that react provides && don't import Grocery Component directly into app.js else gets included in bundles.
+
+*/
+
+const Grocery = lazy(() => import("./components/Grocery"));
 
 /* 
 - AppLayout component has 2 components as it's children: <Header/><Body/>. Now based on route, I want to put <About/> or <Contact/> instead of <Body/>. 
@@ -54,6 +67,10 @@ const appRouter = createBrowserRouter([
       {
         path: "/restaurants/:resId",
         element: <RestaurantMenu />,
+      },
+      {
+        path: "/grocery",
+        element: <Grocery />,
       },
     ],
     errorElement: <Error />,

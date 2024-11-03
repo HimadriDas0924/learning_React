@@ -2,8 +2,12 @@ import RestaurantCard from "./RestaurantCard";
 import Shimmer from "./Shimmer";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom"; // go to different different routes (defined in path objects) without page-reload.
+import useOnlineStatus from "../utils/useOnlineStatus";
 
 const Body = () => {
+  // check online status using customHook
+  const onlineStatus = useOnlineStatus();
+
   // list of all the restaurants
   const [listOfRestaurants, setListOfRestaurants] = useState([]);
 
@@ -35,6 +39,11 @@ const Body = () => {
     setListOfRestaurants(apiResObjArray);
     setFilteredRest(apiResObjArray);
   };
+
+  if (onlineStatus === false)
+    return (
+      <h1>Hey! looks like you're OFFLINE, check your internet connection.</h1>
+    );
 
   // state variable empty: display loader. else display the body
   return listOfRestaurants.length == 0 ? (
