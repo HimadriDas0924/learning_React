@@ -25,7 +25,7 @@
 
    - And using custom Hooks to modularize the code is a good practice. i.e doing smt(i.e fetching data) inside a function (i.e hook) and this maintains modularity.
 
-3. Hooks are utility functions. So general convention is create them in /utils and single file for each hook.
+3. Hooks are utility functions. So general convention is create them in `/utils` and single file for each hook.
 
 4. Implementing ONLINE STATUS of application :
 
@@ -58,6 +58,7 @@
     - Dynamic Bundling
     - on demand loading
     - lazy loading
+    - dynamic import
 
   - AND we'll define which files we want to bundle together and which files we want to not.
 
@@ -79,3 +80,33 @@
       - lazy loading (i.e whatever we're going to load using lazy loading, won't be included into the main bundle, rather when needed it will be separately loaded)
 
       - to use lazy loading: use the function lazy() that react provides && don't import Grocery Component directly into app.js else gets included in bundles.
+
+      ```javascript
+      // in app.js
+      // we haven't imported the Grocery component via import, rather we've called the function lazy.
+      import { lazy } from "react";
+
+      const Grocery = lazy(() => import("./components/Grocery"));
+
+      // added the path object in createBrowserRouter i.e element: <Grocery />, path: "/grocery".
+      ```
+
+      - `ERROR`: A component suspended while responding to a synchronous input.
+
+      - `REASON` : becuase when we click on Grocery, we made a request for the Grocery bundle (which took few miliseconds). Meanwhile, since React is so fast, React tried to render the component. But the code was not there i.e (NOT in the already existing bundle). So it threw the above error i.e (SUSPENDED the rendering of the component).
+
+      - `SOLUTION` : use of `Suspense Component from react`. react provides us a Suspense Component. We wrap this Component to the Component we're loading on demand. And provide a `fallback` as a prop in Suspence which could be either a Component Or just JSX. Until the bundle we're requesting for is completely loaded we'll be displaying the JSX of the fallback && once it's loaded, the JSX of Grocery component is displayed.
+
+      ```javascript
+        import {lazy, Suspence} from "react";
+
+        const Grocery = lazy(() => import("./component/Grocery"));
+
+        // inside the createBrowserRouter: the path object for <Grocery>
+        {
+          path: "/grocery",
+          element: <Suspence fallback = {<h1>Loading...</h1>}> <Grocery /> </Suspence>
+        }
+      ```
+
+      - If you want to build large scale applications with 1000s of Components then LAZY LOADING is a MUST to use to increase performance bcz else a single bundle size would be very high.
