@@ -11,9 +11,8 @@ class About extends Component {
 
   render() {
     return (
-      <div>
-        <h1>About</h1>
-        <h2>This is Namaste React Web series</h2>
+      <div className="m-4 shadow-lg">
+        <h1 className="text-center text-xl font-semibold py-2 ">About</h1>
         <UserClass name={"Himadri Das"} location={"Dhanbad (class)"} />
       </div>
     );

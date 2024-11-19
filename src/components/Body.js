@@ -49,19 +49,21 @@ const Body = () => {
   return listOfRestaurants.length == 0 ? (
     <Shimmer />
   ) : (
-    <div className="body">
-      <div className="filter">
-        <div className="search">
+    <div className="body m-2">
+      <div className="filter flex items-center">
+        <div className="search-res m-4 p-4">
           <input
             type="text"
-            className="search-box"
+            className="search-box border border-black border-solid p-2 mx-2 w-96 rounded-md"
             value={searchText}
+            placeholder="search restaurants..."
             onChange={(e) => {
               // whatever we type is displayed in the input box.
               setSearchText(e.target.value);
             }}
           />
           <button
+            className="p-2 bg-green-500 mx-2 w-24 rounded-md text-white"
             onClick={() => {
               // filter the restaurant card and update the UI.
               const filteredRes = listOfRestaurants.filter((resObj) => {
@@ -75,25 +77,27 @@ const Body = () => {
             Search
           </button>
         </div>
-        <button
-          className="filter-btn"
-          onClick={() => {
-            const filteredList = listOfRestaurants.filter(
-              (res) => res?.info?.avgRating > 4.3
-            );
+        <div className="top-res m-4 p-4">
+          <button
+            className="filter-btn p-2 bg-green-500 text-white rounded-md"
+            onClick={() => {
+              const filteredList = listOfRestaurants.filter(
+                (res) => res?.info?.avgRating > 4.3
+              );
 
-            setFilteredRest(filteredList); // calling the function && pass in the udpated value of the stateful variable. As soon as the variable updates, the UI is re rendered i.e functional component is re called.
-          }}
-        >
-          Top Rated Restaurants
-        </button>
+              setFilteredRest(filteredList); // calling the function && pass in the udpated value of the stateful variable. As soon as the variable updates, the UI is re rendered i.e functional component is re called.
+            }}
+          >
+            Top Rated Restaurants
+          </button>
+        </div>
       </div>
-      <div className="res-container">
+      <div className="res-container flex flex-wrap mx-12">
         {filteredRest.map((restaurant, index) => (
           <Link
             className="link-res-card"
             to={"/restaurants/" + restaurant.info.id}
-            key={restaurant.info.id} // NOTE: 'key' should be within the parent element used within a map.
+            key={restaurant.info.id} // NOTE: 'key' should be present directly on the element on which we're using 'map'.
           >
             <RestaurantCard resData={restaurant} />
           </Link>

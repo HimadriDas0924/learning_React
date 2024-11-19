@@ -19,37 +19,36 @@ const Header = () => {
   const onlineStatus = useOnlineStatus();
 
   return (
-    <div className="header">
-      {console.log("jsx of header")}
+    <div className="flex justify-between bg-pink-100 m-2 shadow-lg ">
       <div className="logo-container">
-        <img className="logo" src={header_logo_url} />
+        <img className="w-24 mix-blend-multiply" src={header_logo_url} />
       </div>
-      <div className="nav-items">
-        <ul>
-          <li>Online Status: {onlineStatus ? "✅" : "🔴"}</li>
-          <li>
+      <div>
+        <ul className="flex m-4 p-4 justify-between items-center">
+          <li className="px-4">Online Status: {onlineStatus ? "✅" : "🔴"}</li>
+          <li className="px-4 hover:underline">
             <Link to="/" className="link-comp-header">
               Home
             </Link>
           </li>
-          <li>
+          <li className="px-4 hover:underline">
             <Link to="/about" className="link-comp-header">
               About Us
             </Link>
           </li>
-          <li>
+          <li className="px-4 hover:underline">
             <Link to="/contact" className="link-comp-header">
               Contact Us
             </Link>
           </li>
-          <li>
+          <li className="px-4 hover:underline">
             <Link to="/grocery" className="link-comp-header">
               Grocery
             </Link>
           </li>
-          <li>Cart</li>
+          <li className="px-4 hover:underline">Cart</li>
           <button
-            className="login"
+            className="px-4 hover:underline"
             onClick={() => {
               btnName === "Login" ? setBtnName("Logout") : setBtnName("Login");
             }}
