@@ -4,7 +4,7 @@ import { LOGO_URL as header_logo_url } from "../utils/constants";
 import { Link } from "react-router-dom";
 import useOnlineStatus from "../utils/useOnlineStatus";
 
-const Header = () => {
+const Header = ({ toggleTheme, curTheme }) => {
   const [btnName, setBtnName] = useState("Login");
   // console.log("Header Component");
 
@@ -19,13 +19,19 @@ const Header = () => {
   const onlineStatus = useOnlineStatus();
 
   return (
-    <div className="flex justify-between bg-pink-100 m-2 shadow-lg ">
+    <div className="flex mx-2 justify-between bg-pink-100 shadow-lg dark:bg-gray-800 dark:text-white ">
       <div className="logo-container">
-        <img className="w-24 mix-blend-multiply" src={header_logo_url} />
+        <img className="w-24 " src={header_logo_url} />
       </div>
       <div>
         <ul className="flex m-4 p-4 justify-between items-center">
           <li className="px-4">Online Status: {onlineStatus ? "✅" : "🔴"}</li>
+          <button
+            className="px-4 border border-slate-700 border-solid rounded-md bg-slate-100 dark: text-black"
+            onClick={toggleTheme}
+          >
+            {curTheme === "dark" ? "light ☀️" : "dark ⚫"}
+          </button>
           <li className="px-4 hover:underline">
             <Link to="/" className="link-comp-header">
               Home

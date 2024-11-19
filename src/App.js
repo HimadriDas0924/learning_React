@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useState } from "react";
 import ReactDOM from "react-dom/client";
 import Header from "./components/Header";
 import Body from "./components/Body";
@@ -27,9 +27,26 @@ const Grocery = lazy(() => import("./components/Grocery"));
 - "react-router-dom" provides another Component called: "Outlet", which puts automatically replaces itself with the specified Component based on the route. 
 */
 const AppLayout = () => {
+  // AppLayout component -> so we can use hooks inside it.
+
+  const [theme, setTheme] = useState("light");
+
+  const toggleTheme = () => {
+    // set the theme of the body
+    console.log("changeTheme called!");
+
+    if (theme === "light") {
+      document.body.classList.add("dark"); // all the dark class of tailwind gets activated
+      setTheme("dark");
+    } else {
+      document.body.classList.remove("dark");
+      setTheme("light");
+    }
+  };
+
   return (
-    <div className="app ">
-      <Header />
+    <div className="app min-h-screen dark:bg-gray-700 dark:text-white">
+      <Header curTheme={theme} toggleTheme={toggleTheme} />
       <Outlet />
     </div>
   );

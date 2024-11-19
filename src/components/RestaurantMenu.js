@@ -20,7 +20,7 @@ const RestaurantMenu = () => {
   return resInfo === null ? (
     <Shimmer />
   ) : (
-    <div className="menu m-2">
+    <div className="menu mt-4 dark:bg-gray-700 dark:text-white">
       <h1 className="font-bold text-center text-3xl py-2">{resName}</h1>
       <h3 className="text-xl p-2 font-semibold">Menu</h3>
       {
@@ -30,7 +30,10 @@ const RestaurantMenu = () => {
             titleObject?.card?.card;
 
           return itemArray === undefined ? null : ( // i.e display nothing
-            <div key={index} className="menu-section m-6 shadow-xl">
+            <div
+              key={index}
+              className="menu-section mt-10 mr-6 ml-6 shadow-xl dark:border dark:border-white "
+            >
               <h2 className="text-center font-semibold text-2xl py-2">
                 {itemType}
               </h2>
@@ -53,12 +56,12 @@ const RestaurantMenu = () => {
                     return (
                       <li
                         key={id}
-                        className="w-[250px] m-4 p-4 bg-gray-100 border border-solid border-slate-700 rounded-md hover:shadow-lg"
+                        className="w-[250px] m-4 p-4 bg-gray-100 border border-solid border-slate-700 rounded-md hover:shadow-lg  dark:bg-gray-800 dark:text-white dark:border dark:border-white dark:border-solid dark:hover:shadow-white"
                       >
                         <div className="menu-card flex flex-col">
                           <img
                             src={MENU_IMAGE_URL + imageId}
-                            alt="item image 😋"
+                            alt="item image "
                             className="menu-card-img rounded-md"
                           />
                           <strong className="py-2">{name}</strong>
