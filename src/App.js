@@ -41,7 +41,7 @@ const AppLayout = () => {
     // set the theme of the body
     console.log("toggleTheme called!");
 
-    if (theme === "light") {
+    if (localStorage.getItem("theme") !== "dark") {
       document.body.classList.add("dark"); // all the dark class of tailwind gets activated
       localStorage.setItem("theme", "dark");
       setTheme("dark"); // for AppLayout re-render
@@ -54,7 +54,7 @@ const AppLayout = () => {
 
   return (
     <div className="app min-h-screen dark:bg-gray-700 dark:text-white">
-      <Header curTheme={theme} toggleTheme={toggleTheme} />
+      <Header toggleTheme={toggleTheme} />
       <Outlet />
     </div>
   );

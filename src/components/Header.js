@@ -4,7 +4,7 @@ import { LOGO_URL as header_logo_url } from "../utils/constants";
 import { Link } from "react-router-dom";
 import useOnlineStatus from "../utils/useOnlineStatus";
 
-const Header = ({ toggleTheme, curTheme }) => {
+const Header = ({ toggleTheme }) => {
   const [btnName, setBtnName] = useState("Login");
   // console.log("Header Component");
 
@@ -30,7 +30,7 @@ const Header = ({ toggleTheme, curTheme }) => {
             className="px-4 border border-slate-700 border-solid rounded-md bg-slate-100 dark: text-black"
             onClick={toggleTheme}
           >
-            {curTheme === "dark" ? "light ☀️" : "dark ⚫"}
+            {localStorage.getItem("theme") === "dark" ? "light ☀️" : "dark ⚫"}
           </button>
           <li className="px-4 hover:underline">
             <Link to="/" className="link-comp-header">
