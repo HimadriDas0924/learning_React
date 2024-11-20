@@ -28,18 +28,26 @@ const Grocery = lazy(() => import("./components/Grocery"));
 */
 const AppLayout = () => {
   // AppLayout component -> so we can use hooks inside it.
-
   const [theme, setTheme] = useState("light");
+
+  // for reload: check for which theme to maintain:
+  if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark");
+  } else {
+    document.body.classList.remove("dark");
+  }
 
   const toggleTheme = () => {
     // set the theme of the body
-    console.log("changeTheme called!");
+    console.log("toggleTheme called!");
 
     if (theme === "light") {
       document.body.classList.add("dark"); // all the dark class of tailwind gets activated
-      setTheme("dark");
+      localStorage.setItem("theme", "dark");
+      setTheme("dark"); // for AppLayout re-render
     } else {
       document.body.classList.remove("dark");
+      localStorage.removeItem("theme");
       setTheme("light");
     }
   };
