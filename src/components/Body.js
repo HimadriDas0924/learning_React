@@ -1,4 +1,4 @@
-import RestaurantCard from "./RestaurantCard";
+import RestaurantCard, { withIsOpen } from "./RestaurantCard";
 import Shimmer from "./Shimmer";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom"; // go to different different routes (defined in path objects) without page-reload.
@@ -21,7 +21,7 @@ const Body = () => {
     fetchData();
   }, []); // 2 arguments: 1st: arrow fn, 2nd: dependency array
 
-  console.log("Body component");
+  console.log("Body component", listOfRestaurants);
 
   const fetchData = async () => {
     console.log("fetching data of all res from api");
@@ -39,6 +39,8 @@ const Body = () => {
     setListOfRestaurants(apiResObjArray);
     setFilteredRest(apiResObjArray);
   };
+
+  const RestaurantCardWithIsOpen = withIsOpen(RestaurantCard); // calling a HOC
 
   if (onlineStatus === false)
     return (
@@ -99,7 +101,11 @@ const Body = () => {
             to={"/restaurants/" + restaurant.info.id}
             key={restaurant.info.id} // NOTE: 'key' should be present directly on the element on which we're using 'map'.
           >
-            <RestaurantCard resData={restaurant} />
+            {restaurant.info.isOpen ? (
+              <RestaurantCardWithIsOpen resData={restaurant} />
+            ) : (
+              <RestaurantCard resData={restaurant} />
+            )}
           </Link>
         ))}
       </div>

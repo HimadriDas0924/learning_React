@@ -9,6 +9,8 @@
 - `font-bold` => make text bold.
 - `text-xl` => make text xl
 
+- **NOTE :** width is divided into 12 parts => `w-8/12` && `w-4/12` we can divide elements to have specific widths only.
+
 ## About Tailwind:
 
 - `Advantage`:

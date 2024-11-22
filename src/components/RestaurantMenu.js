@@ -1,7 +1,8 @@
 import useRestaurantMenu from "../utils/useRestaurantMenu";
 import { useParams } from "react-router-dom";
 import Shimmer from "./Shimmer";
-import { MENU_IMAGE_URL } from "../utils/constants";
+import RestaurantCategory from "./RestaurantCategory";
+import { useState } from "react";
 
 // loader -> api call -> update UI (bcz we update stateVar, so component refreshes)
 const RestaurantMenu = () => {
@@ -10,75 +11,38 @@ const RestaurantMenu = () => {
   // using custom hooks
   const resInfo = useRestaurantMenu(resId);
 
+  const [categoryIndex, setCategoryIndex] = useState(0); // initially display 0th category as expanded. categoryIndex passes as props to child determines whether to display the child's body or not.
+
   // optinal chaining: if exp evaluates to 'undefined' or 'null' -> undefined is returned.
   const resName = resInfo?.cards[0]?.card?.card?.text;
-  const menuArray =
-    resInfo?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards.slice(2, -2);
+  const cuisines = resInfo?.cards[2]?.card?.card?.info?.cuisines.join(", ");
 
-  // console.log(menuArray);
+  // console.log(resInfo);
+
+  // array of items of each category
+  const categories =
+    resInfo?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards.filter(
+      (c) =>
+        c?.card?.card?.["@type"] ===
+        "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory"
+    );
 
   return resInfo === null ? (
     <Shimmer />
   ) : (
-    <div className="menu m-2">
-      <h1 className="font-bold text-center text-3xl py-2">{resName}</h1>
-      <h3 className="text-xl p-2 font-semibold">Menu</h3>
-      {
-        // each section
-        menuArray.map((titleObject, index) => {
-          const { title: itemType, itemCards: itemArray } =
-            titleObject?.card?.card;
-
-          return itemArray === undefined ? null : ( // i.e display nothing
-            <div key={index} className="menu-section m-6 shadow-xl">
-              <h2 className="text-center font-semibold text-2xl py-2">
-                {itemType}
-              </h2>
-              <ul className="each-section-container flex flex-wrap m-4 ">
-                {
-                  // all items of a particular section
-
-                  itemArray.map((item) => {
-                    const {
-                      id,
-                      name,
-                      imageId,
-                      defaultPrice,
-                      price,
-                      ratings: {
-                        aggregatedRating: { rating },
-                      },
-                    } = item?.card?.info;
-
-                    return (
-                      <li
-                        key={id}
-                        className="w-[250px] m-4 p-4 bg-gray-100 border border-solid border-slate-700 rounded-md hover:shadow-lg"
-                      >
-                        <div className="menu-card flex flex-col">
-                          <img
-                            src={MENU_IMAGE_URL + imageId}
-                            alt="item image 😋"
-                            className="menu-card-img rounded-md"
-                          />
-                          <strong className="py-2">{name}</strong>
-                          <em>
-                            Price: {price ? price / 100 : defaultPrice / 100}
-                          </em>
-                          {/* {console.log(rating)} */}
-                          {rating === undefined ? null : ( // display nothing.
-                            <em>Rating: {rating + "⭐"}</em>
-                          )}
-                        </div>
-                      </li>
-                    );
-                  })
-                }
-              </ul>
-            </div>
-          );
-        })
-      }
+    <div className="text-center">
+      <div className="text-3xl font-semibold mt-10 mb-5">{resName}</div>
+      <div className="text-xl font-medium text-red-500">{cuisines}</div>
+      {/* categoies accordion -> each accordion has a header and collapsable body */}
+      {categories.map((category, index) => (
+        // RestaurantCategory -> Controlled Component
+        <RestaurantCategory
+          data={category?.card?.card}
+          key={category?.card?.card?.title}
+          showCategoryItems={categoryIndex === index}
+          setCategoryIndex={() => setCategoryIndex(index)}
+        />
+      ))}
     </div>
   );
 };
