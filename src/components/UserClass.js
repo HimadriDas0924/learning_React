@@ -1,4 +1,5 @@
 import React from "react";
+import UserContext from "../utils/UserContext";
 
 class UserClass extends React.Component {
   // constructor receives the props
@@ -27,7 +28,7 @@ class UserClass extends React.Component {
       userInfo: json,
     });
 
-    console.log(json);
+    // console.log(json);
   }
 
   // render method returns JSX
@@ -48,6 +49,28 @@ class UserClass extends React.Component {
           <h3 className="py-2">
             <span className="font-semibold">twitter:</span> {twitter_username}
           </h3>
+          <div>
+            {/* Consuming the nested ancestor provider */}
+
+            {/* Method 1 : */}
+
+            {/* <UserContext.Consumer
+              children={({ loggedInUser }) => (
+                <div className="text-green-600 font-semibold">
+                  {loggedInUser}
+                </div>
+              )}
+            /> */}
+
+            {/* Method 2 : useContext(contextName) returns the context object from the nearest Provder and then we use it's data in a Component */}
+
+            {/* Method 3 : */}
+            <UserContext.Consumer>
+              {({ loggedInUser }) => (
+                <div className="text-red-500 font-semibold">{loggedInUser}</div>
+              )}
+            </UserContext.Consumer>
+          </div>
         </div>
         <div className="user-avatar w-[250px] m-4">
           <img src={avatar_url} />

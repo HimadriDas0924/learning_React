@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import Header from "./components/Header";
 import Body from "./components/Body";
@@ -7,6 +7,7 @@ import Contact from "./components/Contact";
 import Error from "./components/Error";
 import RestaurantMenu from "./components/RestaurantMenu";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
+import UserContext from "./utils/UserContext";
 /* 
 - createBrowserRouter creates a routing configuration for us && RouterProvide provides this routing configuration to our app. Outlet is a Component which replaces itself with the reqd component based on the route.
 - React Outlet is a Component provided by React Router that serves as a placeholder for Children Components based on children routes. It allows for loading dynamic components based on different routes.
@@ -21,17 +22,41 @@ import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 */
 
 const Grocery = lazy(() => import("./components/Grocery"));
+// console.log(Grocery); // an object
 
 /* 
 - AppLayout component has 2 components as it's children: <Header/><Body/>. Now based on route, I want to put <About/> or <Contact/> instead of <Body/>. 
 - "react-router-dom" provides another Component called: "Outlet", which puts automatically replaces itself with the specified Component based on the route. 
 */
 const AppLayout = () => {
+  // DEMONSTRATION OF UPDATING DATA IN CONTEXT.
+
+  // suppose you made an API call to fetch user data && then we modify the userData in context && we want the entire app to reflect changes with new data.
+  const [userName, setUserName] = useState();
+
+  useEffect(() => {
+    // suppose we fetched the data
+    const data = {
+      name: "himadri das",
+    };
+    setUserName(data.name);
+  }, []);
+
   return (
-    <div className="app ">
-      <Header />
-      <Outlet />
-    </div>
+    <UserContext.Provider
+      value={{
+        loggedInUser: userName,
+        updateUserName: (value) => {
+          // changed username is reflected everywhere.
+          setUserName(value);
+        },
+      }}
+    >
+      <div className="app ">
+        <Header />
+        <Outlet />
+      </div>
+    </UserContext.Provider>
   );
 };
 

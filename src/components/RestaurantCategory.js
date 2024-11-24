@@ -3,12 +3,24 @@ import ItemList from "./ItemList";
 // Restaurant Category Accordion
 // to implement: show && hide feature -> stateVariable && when we click on (close) set value of stateVariable and re-render component.
 
-const RestaurantCategory = ({ data, showCategoryItems, setCategoryIndex }) => {
+const RestaurantCategory = ({
+  data,
+  showCategoryItems,
+  setExpandedCategoryIndex,
+  currentShownCategoryIndex,
+  currentCategoryIndex,
+}) => {
   //   console.log(data);
 
   const handleClick = () => {
-    // updating the parent's state with current elem's index via the cb fn && parent re-render
-    setCategoryIndex();
+    // updating the parent's state via the cb fn. So parent re-render
+    if (currentShownCategoryIndex === currentCategoryIndex) {
+      // so we want to close current category body
+      setExpandedCategoryIndex(null); // i.e no category has expanded body
+    } else {
+      // expand only the current category's body
+      setExpandedCategoryIndex(currentCategoryIndex);
+    }
   };
 
   return (

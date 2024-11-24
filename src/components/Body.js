@@ -1,10 +1,14 @@
 import RestaurantCard, { withIsOpen } from "./RestaurantCard";
 import Shimmer from "./Shimmer";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom"; // go to different different routes (defined in path objects) without page-reload.
 import useOnlineStatus from "../utils/useOnlineStatus";
+import UserContext from "../utils/UserContext";
 
 const Body = () => {
+  // access context variables
+  const { updateUserName, loggedInUser } = useContext(UserContext); // returns the context object
+
   // check online status using customHook
   const onlineStatus = useOnlineStatus();
 
@@ -21,10 +25,10 @@ const Body = () => {
     fetchData();
   }, []); // 2 arguments: 1st: arrow fn, 2nd: dependency array
 
-  console.log("Body component", listOfRestaurants);
+  // console.log("Body component", listOfRestaurants);
 
   const fetchData = async () => {
-    console.log("fetching data of all res from api");
+    // console.log("fetching data of all res from api");
 
     const data = await fetch(
       "https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.9715987&lng=77.5945627&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
@@ -79,7 +83,8 @@ const Body = () => {
             Search
           </button>
         </div>
-        <div className="top-res m-4 p-4">
+        <div className="top-res  p-4">
+          {/* get top rated restaurants */}
           <button
             className="filter-btn p-2 bg-green-500 text-white rounded-md"
             onClick={() => {
@@ -92,6 +97,18 @@ const Body = () => {
           >
             Top Rated Restaurants
           </button>
+        </div>
+        <div className="m-4 p-4">
+          {/* dynamically change: loggedInUser property of UserContext -> as we type in input box */}
+          <span className="px-2">Username : </span>
+          <input
+            className="p-2 border border-black"
+            value={loggedInUser}
+            onChange={(e) => {
+              // console.log(e.target.value);
+              updateUserName(e.target.value);
+            }}
+          />
         </div>
       </div>
       <div className="res-container flex flex-wrap mx-12">
