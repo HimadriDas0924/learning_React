@@ -1,8 +1,22 @@
+import { useDispatch } from "react-redux";
 import { MENU_IMAGE_URL } from "../utils/constants";
+import { addItem } from "../utils/cartSlice";
 
 // Restaurant Menu - Accordion Body of each category containing multiple items
 const ItemList = ({ itemArray }) => {
   //   console.log(itemArray);
+
+  const dispatch = useDispatch(); // calling useDispatch hook returns a dispatch function.
+
+  const handleAddItem = (item) => {
+    // dispatch an action
+    dispatch(addItem(item));
+    /* 
+      -> addItem(state, action) => why haven't we passed the state ? => bcz react internally manages it.
+
+      -> Behind the scenes => addItem("pizza") => "pizza" is wrapped inside an object whose payload: "pizza" and then addItem is called with 2nd argument i.e action as this object. 
+    */
+  };
 
   return (
     <div>
@@ -47,21 +61,26 @@ const ItemList = ({ itemArray }) => {
               </div>
               <div>
                 <div className="absolute">
-                  <button className="font-semibold m-1 p-2 text-green-600 bg-white border-black border rounded-md">
+                  <button
+                    className="font-semibold m-1 p-2 text-white bg-black border-white border rounded-md"
+                    onClick={() => handleAddItem(item)}
+                  >
                     Add +
                   </button>
                 </div>
-                {imageId ? (
-                  <img
-                    src={MENU_IMAGE_URL + imageId}
-                    alt="item image"
-                    className="rounded-lg w-[200px] h-auto object-cover"
-                  />
-                ) : (
-                  <div className="rounded-lg w-[200px] h-[150px] object-cover bg-gray-300 flex justify-center items-center">
-                    no image
-                  </div>
-                )}
+                <div className="overflow-hidden h-[200px] w-[200px]">
+                  {imageId ? (
+                    <img
+                      src={MENU_IMAGE_URL + imageId}
+                      alt="item image"
+                      className="rounded-lg w-[100%] h-[100%] object-cover object-center"
+                    />
+                  ) : (
+                    <div className="rounded-lg w-[200px] h-[200px] object-cover bg-gray-300 flex justify-center items-center">
+                      no image
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           );

@@ -4,6 +4,7 @@ import { LOGO_URL as header_logo_url } from "../utils/constants";
 import { Link } from "react-router-dom";
 import useOnlineStatus from "../utils/useOnlineStatus";
 import UserContext from "../utils/UserContext";
+import { useSelector } from "react-redux";
 
 const Header = () => {
   const [btnName, setBtnName] = useState("Login");
@@ -13,9 +14,13 @@ const Header = () => {
   // 3) if dependency array is [btnName] => useEffect called on initial render + called everytime 'btnName' changes.
 
   const { loggedInUser, prevUser } = useContext(UserContext);
-  console.log(loggedInUser);
+  // console.log(loggedInUser);
 
   const onlineStatus = useOnlineStatus();
+
+  // subscribing to the store using a selector
+  const cartItems = useSelector((store) => store.cart.items); // useSelector takes a cb function => where we need to mention the data from the store which we need to fetch.
+  console.log(cartItems);
 
   return (
     <div className="flex justify-between bg-pink-100 m-2 shadow-lg ">
@@ -45,16 +50,18 @@ const Header = () => {
               Grocery
             </Link>
           </li>
-          <li className="px-4 hover:underline">Cart</li>
+          <li className="px-4 hover:underline font-semibold ">
+            <Link to="/cart">Cart - ({cartItems.length} items)</Link>
+          </li>
           <button
-            className="px-4 hover:underline"
+            className="px-4 border border-solid border-black bg-gray-100 rounded-md"
             onClick={() => {
               btnName === "Login" ? setBtnName("Logout") : setBtnName("Login");
             }}
           >
             {btnName}
           </button>
-          <li className="px-4 hover:underline font-semibold">
+          <li className="px-4  font-semibold">
             {/* 2 options to access data from context */}
 
             <Link>{loggedInUser}</Link>

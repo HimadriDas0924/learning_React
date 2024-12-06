@@ -8,6 +8,10 @@ import Error from "./components/Error";
 import RestaurantMenu from "./components/RestaurantMenu";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import UserContext from "./utils/UserContext";
+import { Provider } from "react-redux"; // we need to provide our store to our react application -> therefore, imported from react-redux.
+import appStore from "./utils/appStore";
+import Cart from "./components/Cart";
+
 /* 
 - createBrowserRouter creates a routing configuration for us && RouterProvide provides this routing configuration to our app. Outlet is a Component which replaces itself with the reqd component based on the route.
 - React Outlet is a Component provided by React Router that serves as a placeholder for Children Components based on children routes. It allows for loading dynamic components based on different routes.
@@ -43,20 +47,22 @@ const AppLayout = () => {
   }, []);
 
   return (
-    <UserContext.Provider
-      value={{
-        loggedInUser: userName,
-        updateUserName: (value) => {
-          // changed username is reflected everywhere.
-          setUserName(value);
-        },
-      }}
-    >
-      <div className="app ">
-        <Header />
-        <Outlet />
-      </div>
-    </UserContext.Provider>
+    <Provider store={appStore}>
+      <UserContext.Provider
+        value={{
+          loggedInUser: userName,
+          updateUserName: (value) => {
+            // changed username is reflected everywhere.
+            setUserName(value);
+          },
+        }}
+      >
+        <div className="app ">
+          <Header />
+          <Outlet />
+        </div>
+      </UserContext.Provider>
+    </Provider>
   );
 };
 
@@ -100,6 +106,10 @@ const appRouter = createBrowserRouter([
             <Grocery />
           </Suspense>
         ),
+      },
+      {
+        path: "/cart",
+        element: <Cart />,
       },
     ],
     errorElement: <Error />,

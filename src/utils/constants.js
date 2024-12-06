@@ -1,5 +1,7 @@
 // this file contain common constants
 // good practice:  to write the name as "SNAKECASE"
+const EMPTY_CART_IMAGE =
+  "https://decorsagadesign.com/static/media/cart_empty.713f204a6dd2bb386006.png";
 
 const CDN_URL =
   "https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_660/"; // for images of res-card
@@ -14,6 +16,6 @@ const RES_MENU_API =
   "https://www.swiggy.com/dapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=12.9715987&lng=77.5945627&restaurantId=";
 
 // named export
-export { CDN_URL, LOGO_URL, MENU_IMAGE_URL, RES_MENU_API };
+export { CDN_URL, LOGO_URL, MENU_IMAGE_URL, RES_MENU_API, EMPTY_CART_IMAGE };
 
 // also we can named export it by attaching export in front of var declaration.
